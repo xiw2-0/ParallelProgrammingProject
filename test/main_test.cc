@@ -8,6 +8,7 @@
 
 extern void TestMillerRobin();
 extern void TestPageRank();
+extern void TestParallelQuickSort();
 
 int main(int argc, char const *argv[]) {
   printf("=================Test starts=================\n\n");
@@ -18,6 +19,10 @@ int main(int argc, char const *argv[]) {
 
   printf("Test PageRanker::PageRank...\n");
   TestPageRank();
+  printf("\n");
+
+  printf("Test ParallelQuickSort...\n");
+  TestParallelQuickSort();
   printf("\n");
   
   printf("=================Test ends=================\n");

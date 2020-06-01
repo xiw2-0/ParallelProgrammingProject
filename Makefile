@@ -8,7 +8,7 @@ cctest = ${wildcard ${TEST_DIR}/*.cc}
 ccobj = ${patsubst ${SRC_DIR}%, ${BUILD_DIR}%, ${ccsrc:.cc=.o}}
 cctestobj = ${patsubst ${TEST_DIR}%, ${BUILD_DIR}%, ${cctest:.cc=.o}}
 
-mainobj = %main_test.o %word_count_test.o
+mainobj = %main_test.o %word_count_test.o %all_gather_test.o
 obj = ${filter-out ${mainobj}, ${ccobj} ${cctestobj}}
 
 TEST = ${BUILD_DIR}/test
@@ -21,7 +21,10 @@ LDFLAGS = -lpthread `mpicc -showme:link`
 WORD_COUNT = ${BUILD_DIR}/word_count
 word_count_obj = ${BUILD_DIR}/word_count_test.o
 
-all: ${TEST} ${WORD_COUNT}
+ALL_GATHER = ${BUILD_DIR}/all_gather
+all_gather_obj = ${BUILD_DIR}/all_gather_test.o
+
+all: ${TEST} ${WORD_COUNT} ${ALL_GATHER}
 .PHONY: all
 
 ${TEST}: ${test_obj} $(obj)
@@ -29,6 +32,9 @@ ${TEST}: ${test_obj} $(obj)
 
 ${WORD_COUNT}: ${word_count_obj} ${obj}
 	${CXX} $^ -o $@  $(LDFLAGS) 
+
+${ALL_GATHER}: ${all_gather_obj} ${obj}
+	${CXX} $^ -o $@  $(LDFLAGS)
 
 ${BUILD_DIR}/%.o: ${TEST_DIR}/%.cc
 	$(CXX) -c $< -o $@ ${CCFLAGS}

@@ -17,7 +17,7 @@ using std::vector;
 namespace para {
 
 // when array size is smaller than MIN_SIZE, no more tasks will be created
-const int MIN_SIZE = 1000;
+const int MIN_SIZE = 100000000;
 
 template<typename T>
 void Partition(T* arr, size_t size, size_t* partition_pos) {
@@ -67,17 +67,18 @@ void ParallelSort(T* arr, size_t size) {
   if (size > MIN_SIZE) {
     #pragma omp taskgroup
     {
-      if (partition_pos > 1){
-        #pragma omp task mergable untied
+      #pragma omp task mergeable untied
+      if (partition_pos > 1){ 
         ParallelSort(arr, partition_pos);
       }
+
+      #pragma omp task mergeable untied
       if (partition_pos + 2 < size) {
-        #pragma omp task mergable untied
         ParallelSort(arr + partition_pos + 1, size - partition_pos - 1);
       }
     }
   } else {
-    #pragma omp task mergable untied
+    #pragma omp task mergeable untied
     {
       if (partition_pos > 1){
         ParallelSort(arr, partition_pos);
@@ -102,7 +103,7 @@ void ParallelSort(T* arr, size_t size) {
 // \return void
 template<typename T>
 void ParallelQuickSort(T* arr, size_t size) {
-  #pragma omp parallel num_threads(4)
+  #pragma omp parallel
   #pragma omp single
   {
     ParallelSort(arr, size);
